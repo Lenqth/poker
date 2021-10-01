@@ -49,6 +49,42 @@ pub enum PokerHands {
 }
 
 impl PokerHands {
+    fn pair_fq(cards: &[Cards; 5]) -> Self {
+        let mut fq = [0; 13];
+        for c in cards {
+            fq[(c.number() - 1) as usize] += 1;
+        }
+        let mut v: Option<(i32, i32)> = None;
+        for i in 0..13 {
+            if fq[i] >= 4 {
+                return Self::FourOfAKind;
+            }
+            if fq[i] >= 2 {
+                match v {
+                    Some((_, num)) => {
+                        if num == 3 {
+                            return Self::FullHouse;
+                        } else {
+                            if fq[i] == 3 {
+                                return Self::FullHouse;
+                            } else {
+                                return Self::TwoPair;
+                            }
+                        }
+                    }
+                    None => {
+                        v = Some((i as i32 + 1, fq[i]));
+                    }
+                }
+            }
+        }
+        match v {
+            Some((_, 3)) => Self::ThreeOfAKind,
+            Some((x, 2)) => Self::OnePair(x),
+            Some((_, _)) => panic!("IMPOSSIBLE"),
+            None => Self::None,
+        }
+    }
     fn flushed(cards: &[Cards; 5]) -> bool {
         let suit = cards[0].suit();
         for i in 1..5 {
@@ -106,80 +142,123 @@ mod tests {
 
     #[test]
     fn flush() {
-        assert!(PokerHands::flushed( 
-            &[
-                Cards::Spade(1),
-                Cards::Spade(4),
-                Cards::Spade(2),
-                Cards::Spade(8),
-                Cards::Spade(11)
-            ]
-        ));
-        assert!(PokerHands::flushed( 
-            &[
-                Cards::Heart(7),
-                Cards::Heart(4),
-                Cards::Heart(2),
-                Cards::Heart(8),
-                Cards::Heart(11)
-            ]
-        ));
-        assert!(!PokerHands::flushed( 
-            &[
-                Cards::Heart(1),
-                Cards::Spade(4),
-                Cards::Heart(2),
-                Cards::Spade(8),
-                Cards::Spade(11)
-            ]
-        ));
-        assert!(!PokerHands::flushed( 
-            &[
-                Cards::Spade(1),
-                Cards::Spade(4),
-                Cards::Heart(2),
-                Cards::Spade(8),
-                Cards::Spade(11)
-            ]
-        ));
+        assert!(PokerHands::flushed(&[
+            Cards::Spade(1),
+            Cards::Spade(4),
+            Cards::Spade(2),
+            Cards::Spade(8),
+            Cards::Spade(11)
+        ]));
+        assert!(PokerHands::flushed(&[
+            Cards::Heart(7),
+            Cards::Heart(4),
+            Cards::Heart(2),
+            Cards::Heart(8),
+            Cards::Heart(11)
+        ]));
+        assert!(!PokerHands::flushed(&[
+            Cards::Heart(1),
+            Cards::Spade(4),
+            Cards::Heart(2),
+            Cards::Spade(8),
+            Cards::Spade(11)
+        ]));
+        assert!(!PokerHands::flushed(&[
+            Cards::Spade(1),
+            Cards::Spade(4),
+            Cards::Heart(2),
+            Cards::Spade(8),
+            Cards::Spade(11)
+        ]));
     }
     #[test]
     fn streighted() {
-        assert!(PokerHands::streighted( 
-            &[
-                Cards::Spade(1),
-                Cards::Spade(4),
-                Cards::Spade(2),
-                Cards::Spade(5),
-                Cards::Spade(3)
-            ]
-        ));
-        assert!(PokerHands::streighted( 
-            &[
-                Cards::Club(10),
-                Cards::Heart(13),
-                Cards::Spade(11),
-                Cards::Diamond(1),
-                Cards::Heart(12)
-            ]
-        ));
-        assert!(!PokerHands::streighted( 
-            &[
-                Cards::Heart(1),
-                Cards::Spade(4),
-                Cards::Heart(2),
-                Cards::Spade(8),
-                Cards::Spade(11)
-            ]
-        ));
-        assert!(!PokerHands::streighted( 
-            &[
-                Cards::Spade(11),
-                Cards::Spade(13),
-                Cards::Heart(12),
-                Cards::Spade(2),
-                Cards::Spade(1)
-            ]
-        ));
+        assert!(PokerHands::streighted(&[
+            Cards::Spade(1),
+            Cards::Spade(4),
+            Cards::Spade(2),
+            Cards::Spade(5),
+            Cards::Spade(3)
+        ]));
+        assert!(PokerHands::streighted(&[
+            Cards::Club(10),
+            Cards::Heart(13),
+            Cards::Spade(11),
+            Cards::Diamond(1),
+            Cards::Heart(12)
+        ]));
+        assert!(!PokerHands::streighted(&[
+            Cards::Heart(1),
+            Cards::Spade(4),
+            Cards::Heart(2),
+            Cards::Spade(8),
+            Cards::Spade(11)
+        ]));
+        assert!(!PokerHands::streighted(&[
+            Cards::Spade(11),
+            Cards::Spade(13),
+            Cards::Heart(12),
+            Cards::Spade(2),
+            Cards::Spade(1)
+        ]));
+    }
+    #[test]
+    fn test_pair_fq_four () {
+        assert_eq!(PokerHands::FourOfAKind ,PokerHands::pair_fq(&[
+            Cards::Club(1),
+            Cards::Heart(6),
+            Cards::Heart(1),
+            Cards::Spade(1),
+            Cards::Diamond(1),
+        ]));
+        assert_eq!(PokerHands::FourOfAKind ,PokerHands::pair_fq(&[
+            Cards::Club(13),
+            Cards::Heart(12),
+            Cards::Spade(13),
+            Cards::Diamond(13),
+            Cards::Heart(13),
+        ]));
+        assert_eq!(PokerHands::ThreeOfAKind ,PokerHands::pair_fq(&[
+            Cards::Club(1),
+            Cards::Heart(6),
+            Cards::Heart(5),
+            Cards::Spade(1),
+            Cards::Diamond(1),
+        ]));
+        assert_eq!(PokerHands::FullHouse ,PokerHands::pair_fq(&[
+            Cards::Club(13),
+            Cards::Heart(5),
+            Cards::Spade(5),
+            Cards::Spade(13),
+            Cards::Diamond(13),
+        ]));
+        assert_eq!(PokerHands::TwoPair ,PokerHands::pair_fq(&[
+            Cards::Club(13),
+            Cards::Heart(5),
+            Cards::Spade(5),
+            Cards::Spade(13),
+            Cards::Diamond(4),
+        ]));
+        assert_eq!(PokerHands::OnePair(8) ,PokerHands::pair_fq(&[
+            Cards::Club(8),
+            Cards::Heart(1),
+            Cards::Spade(5),
+            Cards::Spade(8),
+            Cards::Diamond(4),
+        ]));
+        assert_eq!(PokerHands::OnePair(13) ,PokerHands::pair_fq(&[
+            Cards::Club(13),
+            Cards::Heart(1),
+            Cards::Spade(5),
+            Cards::Spade(13),
+            Cards::Diamond(4),
+        ]));
+        assert_eq!(PokerHands::OnePair(1) ,PokerHands::pair_fq(&[
+            Cards::Club(13),
+            Cards::Heart(1),
+            Cards::Spade(5),
+            Cards::Spade(1),
+            Cards::Diamond(4),
+        ]));
     }
 }
