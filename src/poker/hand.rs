@@ -84,6 +84,8 @@ impl PokerHands {
                     }
                     a += 1;
                 }
+            } else {
+                return false;
             }
         } else {
             for i in 1..5 {
