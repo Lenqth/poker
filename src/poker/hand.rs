@@ -61,7 +61,7 @@ impl PokerHands {
         }
         true
     }
-    fn streighted(cards: &[Cards; 5]) -> bool {
+    fn streighted(cards: &[Cards; 5]) -> Option<i32> {
         let mut sorted_num = cards.map(|x| x.number());
         sorted_num.sort();
 
@@ -72,44 +72,50 @@ impl PokerHands {
                 a = 11;
                 for i in 2..5 {
                     if sorted_num[i] != a {
-                        return false;
+                        return None;
                     }
                     a += 1;
                 }
+                Some(14)
             } else if b == 2 {
                 a = 3;
                 for i in 2..5 {
                     if sorted_num[i] != a {
-                        return false;
+                        return None;
                     }
                     a += 1;
                 }
+                Some(a-1)
             } else {
-                return false;
+                return None;
             }
         } else {
             a += 1;
             for i in 1..5 {
                 if sorted_num[i] != a {
-                    return false;
+                    return None;
                 }
                 a += 1;
             }
+            Some(a-1)
         }
-        true
     }
 
     pub fn cards_to_hand(cards: &[Cards; 5]) -> PokerHands {
         let flushed = Self::flushed(&cards);
         let streighted = Self::streighted(&cards);
         if flushed {
-            if streighted {
-                Self::StraightFlush
+            if let Some(x) = streighted {
+                if x == 14 {
+                    Self::RoyalFlush
+                }else{
+                    Self::StraightFlush
+                }
             } else {
                 Self::Flush
             }
         } else {
-            if streighted {
+            if let Some(_) = streighted {
                 Self::Straight
             } else {
                 Self::pair_fq(&cards)
@@ -155,28 +161,28 @@ mod tests {
     }
     #[test]
     fn streighted() {
-        assert!(PokerHands::streighted(&[
+        assert_eq!(Some(5),PokerHands::streighted(&[
             Cards::Spade(1),
             Cards::Spade(4),
             Cards::Spade(2),
             Cards::Spade(5),
             Cards::Spade(3)
         ]));
-        assert!(PokerHands::streighted(&[
+        assert_eq!(Some(14),PokerHands::streighted(&[
             Cards::Club(10),
             Cards::Heart(13),
             Cards::Spade(11),
             Cards::Diamond(1),
             Cards::Heart(12)
         ]));
-        assert!(!PokerHands::streighted(&[
+        assert_eq!(None,PokerHands::streighted(&[
             Cards::Heart(1),
             Cards::Spade(4),
             Cards::Heart(2),
             Cards::Spade(8),
             Cards::Spade(11)
         ]));
-        assert!(!PokerHands::streighted(&[
+        assert_eq!(None,PokerHands::streighted(&[
             Cards::Spade(11),
             Cards::Spade(13),
             Cards::Heart(12),
