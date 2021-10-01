@@ -132,7 +132,19 @@ impl PokerHands {
     pub fn cards_to_hand(cards: [Cards; 5]) -> PokerHands {
         let flushed = Self::flushed(&cards);
         let streighted = Self::streighted(&cards);
-        PokerHands::None
+        if flushed {
+            if streighted {
+                Self::StraightFlush
+            } else {
+                Self::Flush
+            }
+        } else {
+            if streighted {
+                Self::Straight
+            } else {
+                Self::pair_fq(&cards)
+            }
+        }
     }
 }
 
