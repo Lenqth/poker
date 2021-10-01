@@ -69,17 +69,17 @@ impl PokerHands {
         if a == 1 {
             let b = sorted_num[1];
             if b == 10 {
-                a = 10;
+                a = 11;
                 for i in 2..5 {
-                    if sorted_num[i] != a + 1 {
+                    if sorted_num[i] != a {
                         return false;
                     }
                     a += 1;
                 }
             } else if b == 2 {
-                a = 2;
+                a = 3;
                 for i in 2..5 {
-                    if sorted_num[i] != a + 1 {
+                    if sorted_num[i] != a {
                         return false;
                     }
                     a += 1;
@@ -88,8 +88,9 @@ impl PokerHands {
                 return false;
             }
         } else {
+            a += 1;
             for i in 1..5 {
-                if sorted_num[i] != a + 1 {
+                if sorted_num[i] != a {
                     return false;
                 }
                 a += 1;
