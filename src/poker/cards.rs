@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 #[derive(Eq, PartialEq, Debug, Copy, Clone)]
 pub enum Suit {
     Heart,
@@ -12,6 +14,31 @@ pub enum Cards {
     Diamond(i32),
     Spade(i32),
     Club(i32),
+}
+impl Display for Cards {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let ns = [
+            "_", "A", "2", "3", "4", "5", "6", "7", "8", "9", "X", "J", "Q", "K",
+        ];
+        match self {
+                Cards::Heart(x) => {
+                    f.write_str("♡")?;
+                    f.write_str(ns[*x as usize])
+            },
+                Cards::Diamond(x) => {
+                    f.write_str("♢")?;
+                    f.write_str(ns[*x as usize])
+            },
+                Cards::Spade(x) => {
+                    f.write_str("♠")?;
+                    f.write_str(ns[*x as usize])
+            },
+                Cards::Club(x) => {
+                    f.write_str("♣")?;
+                    f.write_str(ns[*x as usize])
+            },
+        }
+    }
 }
 
 impl Cards {
@@ -42,6 +69,5 @@ impl Cards {
             3 => Self::Club(n + 1),
             _ => panic!("IMPOSSIBLE"),
         }
-
     }
 }

@@ -99,7 +99,7 @@ impl PokerHands {
         true
     }
 
-    pub fn cards_to_hand(cards: [Cards; 5]) -> PokerHands {
+    pub fn cards_to_hand(cards: &[Cards; 5]) -> PokerHands {
         let flushed = Self::flushed(&cards);
         let streighted = Self::streighted(&cards);
         if flushed {
