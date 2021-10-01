@@ -1,12 +1,13 @@
-use rand::Rng;
+use rand::{Rng, prelude::IteratorRandom};
 
 use super::cards::Cards;
+use rand::seq::SliceRandom;
 
 pub fn random_gen() -> [Cards; 5] {
     let mut dest = [Cards::Heart(0); 5];
-    let d = rand::distributions::Uniform::from(0..52);
-    for (i,x) in rand::thread_rng().sample_iter(d).take(5).enumerate() {
-        dest[i] = Cards::from_id(x);
+    let d = (0..52).choose_multiple(&mut rand::thread_rng(), 5);
+    for (i,x) in d.iter().enumerate() {
+        dest[i] = Cards::from_id(*x);
     }
     dest
 }

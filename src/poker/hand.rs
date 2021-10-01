@@ -1,6 +1,6 @@
 use super::cards::{Cards, Suit};
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Debug, Clone)]
 pub enum PokerHands {
     RoyalFlush,
     FiveOfAKind,
