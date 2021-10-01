@@ -1,37 +1,4 @@
-#[derive(Eq, PartialEq, Debug, Copy, Clone)]
-pub enum Suit {
-    Heart,
-    Diamond,
-    Spade,
-    Club,
-}
-
-#[derive(Eq, PartialEq, Debug, Copy, Clone)]
-pub enum Cards {
-    Heart(i32),
-    Diamond(i32),
-    Spade(i32),
-    Club(i32),
-}
-
-impl Cards {
-    fn suit(&self) -> Suit {
-        match self {
-            Cards::Heart(_) => Suit::Heart,
-            Cards::Diamond(_) => Suit::Diamond,
-            Cards::Spade(_) => Suit::Spade,
-            Cards::Club(_) => Suit::Club,
-        }
-    }
-    fn number(&self) -> i32 {
-        match self {
-            Cards::Heart(x) => *x,
-            Cards::Diamond(x) => *x,
-            Cards::Spade(x) => *x,
-            Cards::Club(x) => *x,
-        }
-    }
-}
+use super::cards::{Cards, Suit};
 
 #[derive(Eq, PartialEq, Debug)]
 pub enum PokerHands {
@@ -215,62 +182,86 @@ mod tests {
         ]));
     }
     #[test]
-    fn test_pair_fq_four () {
-        assert_eq!(PokerHands::FourOfAKind ,PokerHands::pair_fq(&[
-            Cards::Club(1),
-            Cards::Heart(6),
-            Cards::Heart(1),
-            Cards::Spade(1),
-            Cards::Diamond(1),
-        ]));
-        assert_eq!(PokerHands::FourOfAKind ,PokerHands::pair_fq(&[
-            Cards::Club(13),
-            Cards::Heart(12),
-            Cards::Spade(13),
-            Cards::Diamond(13),
-            Cards::Heart(13),
-        ]));
-        assert_eq!(PokerHands::ThreeOfAKind ,PokerHands::pair_fq(&[
-            Cards::Club(1),
-            Cards::Heart(6),
-            Cards::Heart(5),
-            Cards::Spade(1),
-            Cards::Diamond(1),
-        ]));
-        assert_eq!(PokerHands::FullHouse ,PokerHands::pair_fq(&[
-            Cards::Club(13),
-            Cards::Heart(5),
-            Cards::Spade(5),
-            Cards::Spade(13),
-            Cards::Diamond(13),
-        ]));
-        assert_eq!(PokerHands::TwoPair ,PokerHands::pair_fq(&[
-            Cards::Club(13),
-            Cards::Heart(5),
-            Cards::Spade(5),
-            Cards::Spade(13),
-            Cards::Diamond(4),
-        ]));
-        assert_eq!(PokerHands::OnePair(8) ,PokerHands::pair_fq(&[
-            Cards::Club(8),
-            Cards::Heart(1),
-            Cards::Spade(5),
-            Cards::Spade(8),
-            Cards::Diamond(4),
-        ]));
-        assert_eq!(PokerHands::OnePair(13) ,PokerHands::pair_fq(&[
-            Cards::Club(13),
-            Cards::Heart(1),
-            Cards::Spade(5),
-            Cards::Spade(13),
-            Cards::Diamond(4),
-        ]));
-        assert_eq!(PokerHands::OnePair(1) ,PokerHands::pair_fq(&[
-            Cards::Club(13),
-            Cards::Heart(1),
-            Cards::Spade(5),
-            Cards::Spade(1),
-            Cards::Diamond(4),
-        ]));
+    fn test_pair_fq_four() {
+        assert_eq!(
+            PokerHands::FourOfAKind,
+            PokerHands::pair_fq(&[
+                Cards::Club(1),
+                Cards::Heart(6),
+                Cards::Heart(1),
+                Cards::Spade(1),
+                Cards::Diamond(1),
+            ])
+        );
+        assert_eq!(
+            PokerHands::FourOfAKind,
+            PokerHands::pair_fq(&[
+                Cards::Club(13),
+                Cards::Heart(12),
+                Cards::Spade(13),
+                Cards::Diamond(13),
+                Cards::Heart(13),
+            ])
+        );
+        assert_eq!(
+            PokerHands::ThreeOfAKind,
+            PokerHands::pair_fq(&[
+                Cards::Club(1),
+                Cards::Heart(6),
+                Cards::Heart(5),
+                Cards::Spade(1),
+                Cards::Diamond(1),
+            ])
+        );
+        assert_eq!(
+            PokerHands::FullHouse,
+            PokerHands::pair_fq(&[
+                Cards::Club(13),
+                Cards::Heart(5),
+                Cards::Spade(5),
+                Cards::Spade(13),
+                Cards::Diamond(13),
+            ])
+        );
+        assert_eq!(
+            PokerHands::TwoPair,
+            PokerHands::pair_fq(&[
+                Cards::Club(13),
+                Cards::Heart(5),
+                Cards::Spade(5),
+                Cards::Spade(13),
+                Cards::Diamond(4),
+            ])
+        );
+        assert_eq!(
+            PokerHands::OnePair(8),
+            PokerHands::pair_fq(&[
+                Cards::Club(8),
+                Cards::Heart(1),
+                Cards::Spade(5),
+                Cards::Spade(8),
+                Cards::Diamond(4),
+            ])
+        );
+        assert_eq!(
+            PokerHands::OnePair(13),
+            PokerHands::pair_fq(&[
+                Cards::Club(13),
+                Cards::Heart(1),
+                Cards::Spade(5),
+                Cards::Spade(13),
+                Cards::Diamond(4),
+            ])
+        );
+        assert_eq!(
+            PokerHands::OnePair(1),
+            PokerHands::pair_fq(&[
+                Cards::Club(13),
+                Cards::Heart(1),
+                Cards::Spade(5),
+                Cards::Spade(1),
+                Cards::Diamond(4),
+            ])
+        );
     }
 }
