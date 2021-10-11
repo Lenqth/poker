@@ -21,27 +21,36 @@ impl Display for Cards {
             "_", "A", "2", "3", "4", "5", "6", "7", "8", "9", "X", "J", "Q", "K",
         ];
         match self {
-                Cards::Heart(x) => {
-                    f.write_str("♡")?;
-                    f.write_str(ns[*x as usize])
-            },
-                Cards::Diamond(x) => {
-                    f.write_str("♢")?;
-                    f.write_str(ns[*x as usize])
-            },
-                Cards::Spade(x) => {
-                    f.write_str("♠")?;
-                    f.write_str(ns[*x as usize])
-            },
-                Cards::Club(x) => {
-                    f.write_str("♣")?;
-                    f.write_str(ns[*x as usize])
-            },
+            Cards::Heart(x) => {
+                f.write_str("♡")?;
+                f.write_str(ns[*x as usize])
+            }
+            Cards::Diamond(x) => {
+                f.write_str("♢")?;
+                f.write_str(ns[*x as usize])
+            }
+            Cards::Spade(x) => {
+                f.write_str("♠")?;
+                f.write_str(ns[*x as usize])
+            }
+            Cards::Club(x) => {
+                f.write_str("♣")?;
+                f.write_str(ns[*x as usize])
+            }
         }
     }
 }
 
 impl Cards {
+    pub fn from_suit_num(suit: Suit, num: i32) -> Self {
+        match suit {
+            Suit::Heart => Cards::Heart(num),
+            Suit::Diamond => Cards::Diamond(num),
+            Suit::Spade => Cards::Spade(num),
+            Suit::Club => Cards::Club(num),
+        }
+    }
+
     pub fn suit(&self) -> Suit {
         match self {
             Cards::Heart(_) => Suit::Heart,
@@ -81,7 +90,6 @@ impl Cards {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::poker::cards::Cards;
@@ -89,7 +97,7 @@ mod tests {
     #[test]
     fn test_id() {
         for i in 0..52 {
-            assert_eq!(i,Cards::from_id(i).get_id());
+            assert_eq!(i, Cards::from_id(i).get_id());
         }
     }
 }

@@ -1,8 +1,8 @@
-use std::{cmp::Ordering, collections::HashMap, mem::MaybeUninit};
+use std::{cmp::Ordering, collections::HashMap, convert::TryInto, io::{Write, stdin, stdout}, mem::MaybeUninit};
 
 use itertools::Itertools;
 use poker::poker::{
-    cards::Cards,
+    cards::{Cards, Suit},
     hand::PokerHands,
     payout::{Payout, JB96},
     utils::random_gen,
@@ -11,7 +11,7 @@ use poker::poker::{
 #[macro_use]
 extern crate timeit;
 
-fn all_holding(payout_calc: &impl Payout, cards: [Cards; 5]) -> [(f64, Vec<Cards>); 32] {
+fn all_holding(payout_calc: &impl Payout, cards: &[Cards; 5]) -> [(f64, Vec<Cards>); 32] {
     let mut card_ids = cards.map(|x| x.get_id());
     card_ids.sort();
     card_ids.reverse();
@@ -83,24 +83,69 @@ fn all_combinations() {
     })
 }
 
+fn input_str(s: &str) -> Result<Vec<Cards>, String> {
+    let mut buff = Vec::new();
+    let mut mode: Option<Suit> = None;
+    for (pos, c) in s.trim_end().chars().into_iter().enumerate() {
+        if let Some(suit) = mode {
+            let num = match c.to_ascii_lowercase() {
+                'a' => 1,
+                '1' => 1,
+                '2' => 2,
+                '3' => 3,
+                '4' => 4,
+                '5' => 5,
+                '6' => 6,
+                '7' => 7,
+                '8' => 8,
+                '9' => 9,
+                'x' => 10,
+                'j' => 11,
+                'q' => 12,
+                'k' => 13,
+                x => return Err(format!("Error at {} : {}", pos, c)),
+            };
+            buff.push(Cards::from_suit_num(suit, num));
+            mode = None;
+        } else {
+            match c.to_ascii_lowercase() {
+                's' => mode = Some(Suit::Spade),
+                'c' => mode = Some(Suit::Club),
+                'd' => mode = Some(Suit::Diamond),
+                'h' => mode = Some(Suit::Heart),
+                x => return Err(format!("Error at {} : {}", pos, c)),
+            }
+        }
+    }
+    Ok(buff)
+}
+
 fn main() {
     let payout_calc = JB96 {};
 
-    let res = all_holding(
-        &payout_calc,
-        [
-            Cards::Diamond(9),
-            Cards::Club(5),
-            Cards::Heart(6),
-            Cards::Spade(3),
-            Cards::Club(1),
-        ],
-    );
-    for (v, holded) in res {
-        for item in holded.iter() {
-            print!("{}", item);
+    loop {
+        let mut s = String::new();
+        print!(">");
+        stdout().flush();
+        stdin().read_line(&mut s);
+        match input_str(&s) {
+            Ok(hand_v) => {
+                if let Ok(x) = hand_v.try_into() {
+                    let hand: [Cards; 5] = x;
+                    let res = all_holding(&payout_calc, &hand);
+                    for (v, holded) in res[0..5].iter() {
+                        for item in holded.iter() {
+                            print!("{} ", item);
+                        }
+                        print!("\n");
+                        println!("{}", v);
+                    }
+                } else {
+                    println!("Supported only exactly 5 cards");
+                    continue;
+                }
+            }
+            Err(e) => println!("{}", e),
         }
-        print!("\n");
-        println!("{}", v);
     }
 }
