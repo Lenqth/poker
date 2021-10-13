@@ -10,9 +10,3 @@ pub fn random_gen() -> [Cards; 5] {
     }
     dest
 }
-
-struct IterCards {}
-
-impl IterCards {
-    fn new() {}
-}
