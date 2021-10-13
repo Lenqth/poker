@@ -21,8 +21,7 @@ fn all_holding(payout_calc: &impl Payout, cards: &[Cards; 5]) -> [(f64, Vec<Card
         rest.remove(card_ids[bit_pos] as usize);
     }
 
-    const UNINIT: MaybeUninit<(f64, Vec<Cards>)> = MaybeUninit::uninit();
-    let mut res: [MaybeUninit<(f64, Vec<Cards>)>; 32] = [UNINIT; 32];
+    let mut res: [(f64, Vec<Cards>); 32] = Default::default();
 
     for holding_id in 0..32i32 {
         let popcount = holding_id.count_ones();
@@ -48,10 +47,8 @@ fn all_holding(payout_calc: &impl Payout, cards: &[Cards; 5]) -> [(f64, Vec<Card
             t += v;
             n += 1;
         }
-        res[holding_id as usize]
-            .write((t / (n as f64), drawn_cards[0..(popcount as usize)].to_vec()));
+        res[holding_id as usize] = (t / (n as f64), drawn_cards[0..(popcount as usize)].to_vec());
     }
-    let mut res: [(f64, Vec<Cards>); 32] = unsafe { std::mem::transmute(res) };
 
     res.sort_by(|(v1, k1), (v2, k2)| v2.partial_cmp(v1).unwrap());
     res
