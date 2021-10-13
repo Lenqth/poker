@@ -1,15 +1,11 @@
 use super::hand::PokerHands;
 
-
 pub trait Payout {
     fn name(&self, hand: &PokerHands) -> &str;
     fn payout(&self, hand: &PokerHands) -> f64;
-
 }
 
-pub struct JB96 {
-
-}
+pub struct JB96 {}
 
 impl Payout for JB96 {
     fn payout(&self, hand: &PokerHands) -> f64 {
@@ -29,8 +25,8 @@ impl Payout for JB96 {
                 } else {
                     0.0
                 }
-            },
-            PokerHands::None => 0.0
+            }
+            PokerHands::None => 0.0,
         }
     }
     fn name(&self, hand: &PokerHands) -> &str {
@@ -50,8 +46,8 @@ impl Payout for JB96 {
                 } else {
                     "nothing"
                 }
-            },
-            PokerHands::None => "nothing"
+            }
+            PokerHands::None => "nothing",
         }
     }
 }

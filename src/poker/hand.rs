@@ -1,4 +1,4 @@
-use super::cards::{Cards, Suit};
+use super::cards::Cards;
 
 #[derive(Eq, PartialEq, Debug)]
 pub enum PokerHands {
@@ -85,7 +85,7 @@ impl PokerHands {
                     }
                     a += 1;
                 }
-                Some(a-1)
+                Some(a - 1)
             } else {
                 return None;
             }
@@ -97,7 +97,7 @@ impl PokerHands {
                 }
                 a += 1;
             }
-            Some(a-1)
+            Some(a - 1)
         }
     }
 
@@ -108,7 +108,7 @@ impl PokerHands {
             if let Some(x) = streighted {
                 if x == 14 {
                     Self::RoyalFlush
-                }else{
+                } else {
                     Self::StraightFlush
                 }
             } else {
@@ -161,34 +161,46 @@ mod tests {
     }
     #[test]
     fn streighted() {
-        assert_eq!(Some(5),PokerHands::streighted(&[
-            Cards::Spade(1),
-            Cards::Spade(4),
-            Cards::Spade(2),
-            Cards::Spade(5),
-            Cards::Spade(3)
-        ]));
-        assert_eq!(Some(14),PokerHands::streighted(&[
-            Cards::Club(10),
-            Cards::Heart(13),
-            Cards::Spade(11),
-            Cards::Diamond(1),
-            Cards::Heart(12)
-        ]));
-        assert_eq!(None,PokerHands::streighted(&[
-            Cards::Heart(1),
-            Cards::Spade(4),
-            Cards::Heart(2),
-            Cards::Spade(8),
-            Cards::Spade(11)
-        ]));
-        assert_eq!(None,PokerHands::streighted(&[
-            Cards::Spade(11),
-            Cards::Spade(13),
-            Cards::Heart(12),
-            Cards::Spade(2),
-            Cards::Spade(1)
-        ]));
+        assert_eq!(
+            Some(5),
+            PokerHands::streighted(&[
+                Cards::Spade(1),
+                Cards::Spade(4),
+                Cards::Spade(2),
+                Cards::Spade(5),
+                Cards::Spade(3)
+            ])
+        );
+        assert_eq!(
+            Some(14),
+            PokerHands::streighted(&[
+                Cards::Club(10),
+                Cards::Heart(13),
+                Cards::Spade(11),
+                Cards::Diamond(1),
+                Cards::Heart(12)
+            ])
+        );
+        assert_eq!(
+            None,
+            PokerHands::streighted(&[
+                Cards::Heart(1),
+                Cards::Spade(4),
+                Cards::Heart(2),
+                Cards::Spade(8),
+                Cards::Spade(11)
+            ])
+        );
+        assert_eq!(
+            None,
+            PokerHands::streighted(&[
+                Cards::Spade(11),
+                Cards::Spade(13),
+                Cards::Heart(12),
+                Cards::Spade(2),
+                Cards::Spade(1)
+            ])
+        );
     }
     #[test]
     fn test_pair_fq_four() {

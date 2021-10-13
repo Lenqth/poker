@@ -1,11 +1,14 @@
-use std::{cmp::Ordering, collections::HashMap, convert::TryInto, io::{Write, stdin, stdout}, mem::MaybeUninit};
+use std::{
+    collections::HashMap,
+    convert::TryInto,
+    io::{stdin, stdout, Write},
+};
 
 use itertools::Itertools;
 use poker::poker::{
     cards::{Cards, Suit},
     hand::PokerHands,
     payout::{Payout, JB96},
-    utils::random_gen,
 };
 
 #[macro_use]
@@ -50,7 +53,7 @@ fn all_holding(payout_calc: &impl Payout, cards: &[Cards; 5]) -> [(f64, Vec<Card
         res[holding_id as usize] = (t / (n as f64), drawn_cards[0..(popcount as usize)].to_vec());
     }
 
-    res.sort_by(|(v1, k1), (v2, k2)| v2.partial_cmp(v1).unwrap());
+    res.sort_by(|(v1, _k1), (v2, _k2)| v2.partial_cmp(v1).unwrap());
     res
 }
 
@@ -100,7 +103,7 @@ fn input_str(s: &str) -> Result<Vec<Cards>, String> {
                 'j' => 11,
                 'q' => 12,
                 'k' => 13,
-                x => return Err(format!("Error at {} : {}", pos, c)),
+                _x => return Err(format!("Error at {} : {}", pos, c)),
             };
             buff.push(Cards::from_suit_num(suit, num));
             mode = None;
@@ -110,7 +113,7 @@ fn input_str(s: &str) -> Result<Vec<Cards>, String> {
                 'c' => mode = Some(Suit::Club),
                 'd' => mode = Some(Suit::Diamond),
                 'h' => mode = Some(Suit::Heart),
-                x => return Err(format!("Error at {} : {}", pos, c)),
+                _x => return Err(format!("Error at {} : {}", pos, c)),
             }
         }
     }
