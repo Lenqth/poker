@@ -122,9 +122,10 @@ fn main() {
 
     loop {
         let mut s = String::new();
-        print!(">");
-        stdout().flush();
-        stdin().read_line(&mut s);
+        print!("input > ");
+        stdout().flush().unwrap();
+        stdin().read_line(&mut s).unwrap();
+
         match input_str(&s) {
             Ok(hand_v) => {
                 if let Ok(x) = hand_v.try_into() {
