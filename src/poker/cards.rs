@@ -6,6 +6,7 @@ pub enum Suit {
     Diamond,
     Spade,
     Club,
+    Joker,
 }
 
 #[derive(Eq, PartialEq, Debug, Copy, Clone)]
@@ -14,11 +15,12 @@ pub enum Cards {
     Diamond(i32),
     Spade(i32),
     Club(i32),
+    Joker,
 }
 impl Display for Cards {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let ns = [
-            "_", "A", "2", "3", "4", "5", "6", "7", "8", "9", "X", "J", "Q", "K",
+            "_", "A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K",
         ];
         match self {
             Cards::Heart(x) => {
@@ -37,6 +39,7 @@ impl Display for Cards {
                 f.write_str("♣")?;
                 f.write_str(ns[*x as usize])
             }
+            Cards::Joker => f.write_str("**"),
         }
     }
 }
@@ -48,6 +51,7 @@ impl Cards {
             Suit::Diamond => Cards::Diamond(num),
             Suit::Spade => Cards::Spade(num),
             Suit::Club => Cards::Club(num),
+            Suit::Joker => Cards::Joker,
         }
     }
 
@@ -57,6 +61,7 @@ impl Cards {
             Cards::Diamond(_) => Suit::Diamond,
             Cards::Spade(_) => Suit::Spade,
             Cards::Club(_) => Suit::Club,
+            Cards::Joker => Suit::Joker,
         }
     }
     pub fn number(&self) -> i32 {
@@ -65,6 +70,7 @@ impl Cards {
             Cards::Diamond(x) => *x,
             Cards::Spade(x) => *x,
             Cards::Club(x) => *x,
+            Cards::Joker => 0,
         }
     }
 
@@ -74,6 +80,7 @@ impl Cards {
             Cards::Diamond(x) => 13 + *x - 1,
             Cards::Spade(x) => 26 + *x - 1,
             Cards::Club(x) => 39 + *x - 1,
+            Cards::Joker => 53,
         }
     }
 

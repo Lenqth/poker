@@ -99,7 +99,7 @@ fn input_str(s: &str) -> Result<Vec<Cards>, String> {
                 '7' => 7,
                 '8' => 8,
                 '9' => 9,
-                'x' => 10,
+                't' => 10,
                 'j' => 11,
                 'q' => 12,
                 'k' => 13,
